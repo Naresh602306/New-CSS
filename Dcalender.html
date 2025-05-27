@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calendar 2025</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: bgFade 5s ease-in-out alternate infinite;
+    }
+
+    @keyframes bgFade {
+      0% { background: linear-gradient(120deg, #a1c4fd, #c2e9fb); }
+      100% { background: linear-gradient(120deg, #c2e9fb, #a1c4fd); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 20px;
+      color: #333;
+      animation: fadeInDown 1s;
+    }
+
+    .calendar-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 columns */
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .month-block {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      border-radius: 18px;
+      animation: fadeInUp 1s;
+      overflow: hidden;
+    }
+
+    .month-title {
+      background: #e3f2fd;
+      color: #1976d2;
+      text-align: center;
+      font-weight: bold;
+      padding: 12px;
+      font-size: 1.2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 8px;
+      font-size: 1rem;
+    }
+
+    th {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+
+    td {
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    td:hover:not(:empty) {
+      background-color: #bbdefb;
+      transform: scale(1.05);
+    }
+
+    .today {
+      background: #ffe082 !important;
+      color: #bf360c !important;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 224, 130, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 224, 130, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 224, 130, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .calendar-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .calendar-container {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      th, td {
+        padding: 6px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Calendar 2025</h1>
+  <div class="calendar-container" id="calendarContainer"></div>
+
+  <script>
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const container = document.getElementById("calendarContainer");
+    const today = new Date();
+    const year = 2025;
+
+    for (let month = 0; month < 12; month++) {
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const monthBlock = document.createElement("div");
+      monthBlock.className = "month-block";
+
+      const title = document.createElement("div");
+      title.className = "month-title";
+      title.textContent = `${monthNames[month]} ${year}`;
+      monthBlock.appendChild(title);
+
+      const table = document.createElement("table");
+      let thead = "<tr>";
+      for (let d = 0; d < 7; d++) {
+        thead += `<th>${days[d]}</th>`;
+      }
+      thead += "</tr>";
+      let body = "<tr>";
+
+      for (let i = 0; i < firstDay; i++) {
+        body += "<td></td>";
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const isToday =
+          day === today.getDate() &&
+          month === today.getMonth() &&
+          year === today.getFullYear();
+
+        body += `<td${isToday ? ' class="today"' : ""}>${day}</td>`;
+        if ((firstDay + day) % 7 === 0 && day !== daysInMonth) {
+          body += "</tr><tr>";
+        }
+      }
+
+      const remaining = (firstDay + daysInMonth) % 7;
+      if (remaining !== 0) {
+        for (let i = remaining; i < 7; i++) {
+          body += "<td></td>";
+        }
+      }
+
+      body += "</tr>";
+      table.innerHTML = thead + body;
+      monthBlock.appendChild(table);
+      container.appendChild(monthBlock);
+    }
+  </script>
+</body>
+</html>
